@@ -14,7 +14,7 @@ from constants import (ENDPOINT, HEADERS, HOMEWORK_VERDICTS,
                        )
 from exeptions import (EndpointNotAvailable, HomeworkNameNotFound,
                        HomeworkNotFound, StatusNotFound,
-                       UnexpectedHomeworkStatus
+                       UnexpectedHomeworkStatus, TokenError
                        )
 
 
