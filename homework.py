@@ -34,11 +34,11 @@ def check_tokens():
 
     if missing_tokens:
         logging.critical(
-            f"Отсутствуют обязательные переменные окружения: "
+            "Отсутствуют обязательные переменные окружения: "
             f"{', '.join(missing_tokens)}"
         )
         raise TokenError(missing_tokens)
-        logging.info("Все токены в порядке!")
+    logging.info("Все токены в порядке!")
 
 
 def send_message(bot, message):
@@ -47,8 +47,10 @@ def send_message(bot, message):
     try:
         bot.send_message(TELEGRAM_CHAT_ID, message)
         logging.debug(f'Бот отправил сообщение: "{message}"')
+        return True
     except (ApiException, requests.exceptions.RequestException) as error:
         logging.error(f'Ошибка при отправке сообщения: {error}')
+        return False
 
 
 def get_api_answer(timestamp):
@@ -149,3 +151,4 @@ def main():
 if __name__ == '__main__':
     handler = logging.StreamHandler(sys.stdout)
     logging.basicConfig(level=logging.INFO, handlers=[handler])
+    main()
