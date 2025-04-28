@@ -1,9 +1,9 @@
 import logging
+import sys
 import time
 from http import HTTPStatus
 
 import requests
-
 from telebot import TeleBot
 from telebot.apihelper import ApiException
 
@@ -37,8 +37,7 @@ def check_tokens():
             f"Отсутствуют обязательные переменные окружения: "
             f"{', '.join(missing_tokens)}"
         )
-        raise ValueError(missing_tokens)
-    else:
+        raise TokenError(missing_tokens)
         logging.info("Все токены в порядке!")
 
 
@@ -48,16 +47,17 @@ def send_message(bot, message):
     try:
         bot.send_message(TELEGRAM_CHAT_ID, message)
         logging.debug(f'Бот отправил сообщение: "{message}"')
-    except (ApiException, Exception) as error:
+    except (ApiException, requests.exceptions.RequestException) as error:
         logging.error(f'Ошибка при отправке сообщения: {error}')
 
 
 def get_api_answer(timestamp):
     """Делает запрос к API и возвращает ответ."""
     payload = {'from_date': timestamp}
-    logging.info("Начинаем запрос к API: %s", ENDPOINT)
-    logging.info("Заголовки: %s", HEADERS)
-    logging.info("Параметры: %s", payload)
+    logging.info(
+        "Начинаем запрос к API: %s, Заголовки: %s, Параметры: %s",
+        ENDPOINT, HEADERS, payload
+    )
     try:
         api_response = requests.get(
             ENDPOINT,
@@ -98,7 +98,6 @@ def check_response(response):
             f'но получен объект типа {type(homeworks).__name__}.'
         )
 
-    logging.debug('Нет новых статусов.')
     return homeworks
 
 
@@ -148,4 +147,5 @@ def main():
 
 
 if __name__ == '__main__':
-    logging.basicConfig(level=logging.INFO)
+    handler = logging.StreamHandler(sys.stdout)
+    logging.basicConfig(level=logging.INFO, handlers=[handler])

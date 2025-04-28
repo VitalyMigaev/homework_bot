@@ -25,6 +25,6 @@ class TokenError(Exception):
         self.missing_tokens = missing_tokens
         missing_tokens_str = ', '.join(missing_tokens)
         super().__init__(
-            f"Отсутствуют обязательные переменные окружения: "
-            f"{missing_tokens_str}"
+            "Отсутствуют обязательные переменные окружения: "
+            + missing_tokens_str
         )
